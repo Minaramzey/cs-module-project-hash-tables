@@ -11,6 +11,9 @@ class HashTableEntry:
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
+class LinkedList:
+    def __init__(self):
+        self.head = None
 
 class HashTable:
     """
@@ -23,7 +26,7 @@ class HashTable:
     def __init__(self, capacity):
         # Your code here
         self.capacity = capacity  # Number of buckets in the hash table
-        self.storage = [None] * capacity
+        self.storage = [LinkedList()] * capacity
         self.entries = 0
 
     def get_num_slots(self):
@@ -84,9 +87,26 @@ class HashTable:
 
         Hash collisions should be handled with Linked List Chaining.
 
-        Implement this.
-        """
-        self.storage[self.hash_index(key)] = value
+        Implement this. 
+        """ 
+        # self.storage[self.hash_index(key)] = value
+        index = self.hash_index(key)
+        if self.storage[index].head == None:
+            self.storage[index].head = HashTableEntry(key, value)
+            self.entries += 1
+            return
+        else:
+
+            item = self.storage[index].head
+
+            while item.next:
+
+                if item.key == key:
+                    item.value = value
+                item = item.next
+
+            item.next = HashTableEntry(key, value)
+            self.entries += 1 
  
 
 
@@ -99,7 +119,21 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        self.storage[self.hash_index(key)] = None
+        # self.storage[self.hash_index(key)] = None
+        index = self.hash_index(key)
+        item = self.storage[index].head
+        if item.key == key:
+            self.storage[index].head = self.storage[index].head.next
+            self.entries -= 1
+            return
+
+        while item.next:
+            prev = item
+            item = item.next
+            if item.key == key:
+                prev.next = item.next
+                self.entries -= 1
+                return None 
 
 
     def get(self, key):
@@ -111,7 +145,20 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return self.storage[self.hash_index(key)]
+        # return self.storage[self.hash_index(key)]
+        index = self.hash_index(key)
+        item = self.storage[index].head
+        if item == None:
+            return None
+
+        if item.key == key:
+            return item.value
+        while item.next:
+            item = item.next
+            if item.key == key:
+                return item.value
+        return None
+
 
 
     def resize(self, new_capacity):

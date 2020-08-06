@@ -168,8 +168,9 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+         # Your code here 
+        self.capacity = new_capacity
+        self.storage = [LinkedList()] * new_capacity
 
 
 if __name__ == "__main__":
